@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      #myCanvas {
+        border: 1px solid #000;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="myCanvas" width="400" height="400"></canvas>
+    <script>
+        // Get the canvas element
+        const canvas = document.getElementById('myCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set initial position and target position
+        let positionX = 50; // Initial position on the x-axis
+        const targetX = 350; // Target position on the x-axis
+        const duration = 2000; // Animation duration in milliseconds
+        let startTime = null;
+
+        // Start the animation
+        function startAnimation(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const elapsed = timestamp - startTime;
+
+        // Calculate the current position using ease-out function
+        positionX = easeOut(elapsed, 50, targetX - 50, duration);
+
+        // Clear the canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw the moving element
+        ctx.fillStyle = 'blue';
+        ctx.fillRect(positionX, 50, 50, 50);
+
+        // Continue the animation until the duration is reached
+        if (elapsed < duration) {
+            requestAnimationFrame(startAnimation);
+        }
+        }
+
+        // Ease-out function for smooth animation
+        function easeOut(t, b, c, d) {
+        t /= d;
+        return -c * t * (t - 2) + b;
+        }
+
+        // Call the startAnimation function to begin the animation
+        requestAnimationFrame(startAnimation);
+
+    </script>
+  </body>
+</html>
