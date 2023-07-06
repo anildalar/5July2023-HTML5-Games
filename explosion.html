@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      canvas {
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="myCanvas" width="400" height="400"></canvas>
+
+    <script>
+      // Get the canvas element
+      var canvas = document.getElementById("myCanvas");
+      var ctx = canvas.getContext("2d");
+
+      // Define explosion properties
+      var particles = [];
+      var particleCount = 100;
+      var particleSize = 3;
+      var explosionStrength = 7;
+
+      // Initialize explosion
+      function explode(x, y) {
+        for (var i = 0; i < particleCount; i++) {
+          var angle = Math.random() * 2 * Math.PI;
+          var speed = Math.random() * explosionStrength;
+          var particle = {
+            x: x,
+            y: y,
+            xVelocity: Math.cos(angle) * speed,
+            yVelocity: Math.sin(angle) * speed,
+          };
+          particles.push(particle);
+        }
+      }
+
+      // Update particle positions and draw explosion
+      function drawExplosion() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (var i = 0; i < particles.length; i++) {
+          var particle = particles[i];
+
+          // Update position
+          particle.x += particle.xVelocity;
+          particle.y += particle.yVelocity;
+
+          // Apply gravity
+          particle.yVelocity += 0.1;
+
+          // Draw particle
+          ctx.fillRect(
+            particle.x - particleSize / 2,
+            particle.y - particleSize / 2,
+            particleSize,
+            particleSize
+          );
+        }
+
+        // Remove particles that have gone off-screen
+        particles = particles.filter(function (particle) {
+          return (
+            particle.x >= 0 &&
+            particle.x <= canvas.width &&
+            particle.y >= 0 &&
+            particle.y <= canvas.height
+          );
+        });
+
+        // Request the next animation frame
+        if (particles.length > 0) {
+          requestAnimationFrame(drawExplosion);
+        }
+      }
+
+      // Trigger explosion on mouse click
+      canvas.addEventListener("click", function (event) {
+        var rect = canvas.getBoundingClientRect();
+        var x = event.clientX - rect.left;
+        var y = event.clientY - rect.top;
+        explode(x, y);
+        drawExplosion();
+      });
+    </script>
+  </body>
+</html>

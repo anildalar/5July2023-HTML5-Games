@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Fireworks Animation</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+        <style>
+            .myCanvas{
+                border:1px dashed red;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas class="myCanvas" ></canvas>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+        <script src="./js/gifuct.js"></script>
+        <script>
+            console.log('*', window.innerWidth + "px");
+            let canvas = document.querySelector(".myCanvas");
+            
+            canvas.width = window.innerWidth-20;
+            canvas.height = window.innerHeight-20;
+            console.log('*',canvas);
+
+            const ctx = canvas.getContext('2d');
+             // Create an Image object
+            const image = new Image();
+
+            // Set the source of the image to the GIF file
+            image.src = './img/fire.gif';
+
+            // Wait for the image to load
+            // Wait for the image to load
+            // Wait for the image to load
+            // Wait for the image to load
+            image.onload = function() {
+                // Decode the GIF frames using gifuct-js
+                const gifFrames = parseGifFrames(image);
+        
+                // Animate the GIF frames
+                let frameIndex = 0;
+                setInterval(() => {
+                // Clear the canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+                // Get the current frame from the GIF frames
+                const frame = gifFrames[frameIndex];
+        
+                // Draw the frame onto the canvas
+                ctx.drawImage(frame.image, frame.x, frame.y);
+        
+                // Increment the frame index
+                frameIndex = (frameIndex + 1) % gifFrames.length;
+                }, gifFrames[0].delay * 10); // Adjust the delay as needed
+            };
+        
+            // Decode the GIF frames using gifuct-js
+            function parseGifFrames(image) {
+                const gif = new gifuctJS.GifReader(new Uint8Array(image.src));
+                const frames = [];
+        
+                for (let i = 0; i < gif.numFrames(); i++) {
+                const frameInfo = gif.frameInfo(i);
+                const imageData = new ImageData(frameInfo.width, frameInfo.height);
+                gif.decodeAndBlitFrameRGBA(i, imageData.data);
+                frames.push({
+                    image: imageData,
+                    x: frameInfo.x,
+                    y: frameInfo.y,
+                    delay: frameInfo.delay
+                });
+                }
+        
+                return frames;
+            }
+            //object.method(actualArgument1,actulArgument2,...)
+
+            //window.addEventLIstener(event,cbfn)
+            //cbfn = callback function
+            window.addEventListener("keydown", handleKeyPress);
+            function handleKeyPress(event) {
+                console.log('*','HEllo');
+            }
+
+
+        </script>
+    </body>
+</html>
