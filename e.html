@@ -16,11 +16,45 @@
 
     <script>
       // Get the canvas element
+      // Set the initial position of the rectangle
+      console.log('Random',Math.ceil(Math.random(0,1)*1200))
+      var xx =Math.ceil(Math.random(0,1)*1200);;
+      var yy = -160;
+
+      // Set the animation speed
+      var speed = 2;
       let canvas = document.querySelector(".myCanvas");
             
       canvas.width = window.innerWidth-20;
       canvas.height = window.innerHeight-20;
+      console.log('*',window.innerHeight-20);
+      console.log('*',(window.innerHeight-20)*0.8);
+      let ch80 = (window.innerHeight-20)*0.8;
       var ctx = canvas.getContext("2d");
+      
+
+      function draw() {
+        // Clear the canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw the rectangle
+        ctx.fillStyle = "red"; // Set the fill color
+        ctx.fillRect(xx, yy, 150, 150); // Draw the rectangle (x, y, width, height)
+
+        // Update the position of the rectangle
+        if(yy <= (ch80-150)){
+          yy+= speed;
+          
+          console.log(yy);
+          // Request the next animation frame
+          requestAnimationFrame(draw);
+        }
+       
+       
+      }
+
+      // Start the animation
+      draw();
 
       // Define explosion properties
       var particles = [];
@@ -83,6 +117,9 @@
       }
 
       // Handle key press event
+      //object.method(arg1,arg2);
+      //arg1 = String
+      //arg2 = cbfn callback funciton
       document.addEventListener("keypress", function (event) {
         var key = String.fromCharCode(event.keyCode);
         console.log("Key pressed:", key);
@@ -90,7 +127,10 @@
         // Play explosion animation
         var x = Math.random() * canvas.width;
         var y = Math.random() * canvas.height;
-        explode(400, 400);
+        console.log('yy->',yy);
+        explode(xx+75, yy+75);
+
+        //2. Function calling
         drawExplosion();
       });
     </script>
