@@ -15,27 +15,47 @@
     <canvas class="myCanvas" width="400" height="400"></canvas>
 
     <script>
+      var score = 0;
+      // Set the label properties
+      const labelFont = "32px Arial";
+      const labelColor = "black";
+      var xx =Math.ceil(Math.random(0,1)*1200);;
+      var yy = -160;
+      var doExplode = true;
+      // Set the animation speed
+      var speed = 2;
+      // Define explosion properties
+      var particles = [];
+      var particleCount = 100;
+      var particleSize = 3;
+      var explosionStrength = 7;
+
+      let MasterCanvas = document.querySelector(".myCanvas");
       // Get the canvas element
       // Set the initial position of the rectangle
       console.log('Random',Math.ceil(Math.random(0,1)*1200))
-      var xx =Math.ceil(Math.random(0,1)*1200);;
-      var yy = -160;
-
-      // Set the animation speed
-      var speed = 2;
-      let canvas = document.querySelector(".myCanvas");
+      
             
-      canvas.width = window.innerWidth-20;
-      canvas.height = window.innerHeight-20;
+      MasterCanvas.width = window.innerWidth-10;
+      MasterCanvas.height = window.innerHeight-10;
       console.log('*',window.innerHeight-20);
       console.log('*',(window.innerHeight-20)*0.8);
+
+
+      // Set the position for the label
+      const labelX =  window.innerWidth-250;
+      const labelY =  window.innerHeight-100;
       let ch80 = (window.innerHeight-20)*0.8;
-      var ctx = canvas.getContext("2d");
-      
+      var ctx = MasterCanvas.getContext("2d");
+      // Draw the label on the canvas
+      ctx.font = labelFont;
+      ctx.fillStyle = labelColor;
+      ctx.fillText("Score :"+score, labelX, labelY);
 
       function draw() {
+        
         // Clear the canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, MasterCanvas.width, MasterCanvas.height);
 
         // Draw the rectangle
         ctx.fillStyle = "red"; // Set the fill color
@@ -52,17 +72,7 @@
        
        
       }
-
-      // Start the animation
-      draw();
-
-      // Define explosion properties
-      var particles = [];
-      var particleCount = 100;
-      var particleSize = 3;
-      var explosionStrength = 7;
-
-      // Initialize explosion
+       // Initialize explosion
       function explode(x, y) {
         for (var i = 0; i < particleCount; i++) {
           var angle = Math.random() * 2 * Math.PI;
@@ -74,12 +84,11 @@
             yVelocity: Math.sin(angle) * speed,
           };
           particles.push(particle);
-        }
       }
-
+      }
       // Update particle positions and draw explosion
       function drawExplosion() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, MasterCanvas.width, MasterCanvas.height);
 
         for (var i = 0; i < particles.length; i++) {
           var particle = particles[i];
@@ -104,9 +113,9 @@
         particles = particles.filter(function (particle) {
           return (
             particle.x >= 0 &&
-            particle.x <= canvas.width &&
+            particle.x <= MasterCanvas.width &&
             particle.y >= 0 &&
-            particle.y <= canvas.height
+            particle.y <= MasterCanvas.height
           );
         });
 
@@ -116,23 +125,57 @@
         }
       }
 
-      // Handle key press event
+      // Function to programmatically trigger a keypress event
+      function triggerKeyPressEvent(keyCode, eventType) {
+        // Create a new keyboard event
+        const event = new KeyboardEvent(eventType, {
+          key: String.fromCharCode(keyCode),
+          keyCode: keyCode,
+          which: keyCode,
+          bubbles: true
+        });
+
+        // Dispatch the event on the document or any target element
+        document.dispatchEvent(event);
+      }
+      
+      let a = () =>{
+        console.log('Hello1')
+        // Example usage
+        const keyCode = 65; // Key code for 'A'
+        const eventType = 'keypress';
+
+        // Trigger the keypress event
+        triggerKeyPressEvent(keyCode, eventType);
+      }
+      let b = ()=>{
+        console.log('Hello3');
+        
+      }
+      // Start the animation
+      draw();
+      setTimeout(a,4000)
+    
+     // Handle key press event
       //object.method(arg1,arg2);
       //arg1 = String
       //arg2 = cbfn callback funciton
+      
       document.addEventListener("keypress", function (event) {
         var key = String.fromCharCode(event.keyCode);
         console.log("Key pressed:", key);
 
         // Play explosion animation
-        var x = Math.random() * canvas.width;
-        var y = Math.random() * canvas.height;
+        var x = Math.random() * MasterCanvas.width;
+        var y = Math.random() * MasterCanvas.height;
         console.log('yy->',yy);
         explode(xx+75, yy+75);
 
         //2. Function calling
         drawExplosion();
       });
+      
+      setInterval(b, Math.floor(Math.random() * (2000 - 1000 + 1)) + 1000);
     </script>
   </body>
 </html>
